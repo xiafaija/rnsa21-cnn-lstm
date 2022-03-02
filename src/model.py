@@ -9,9 +9,9 @@ class CNN(nn.Module):
         super().__init__()
         self.map = nn.Conv2d(in_channels=4, out_channels=3, kernel_size=1)
         self.net = EfficientNet.from_name("efficientnet-b0")
-        if checkpoint_path:
-            checkpoint = torch.load(checkpoint_path)
-            self.net.load_state_dict(checkpoint)
+#         if checkpoint_path:
+#             checkpoint = torch.load(checkpoint_path)
+#             self.net.load_state_dict(checkpoint)
         
         n_features = self.net._fc.in_features
         self.net._fc = nn.Linear(in_features=n_features, out_features=CFG.cnn_features, bias=True)
