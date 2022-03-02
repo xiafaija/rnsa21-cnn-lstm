@@ -35,9 +35,9 @@ class DataRetriever(Dataset):
     
     def __getitem__(self, index):
         _id = self.paths[index]
-        print(_id)
+    
         patient_path = os.path.join(self.patient_path, f'{str(_id).zfill(5)}/')
-        print(patient_path)
+   
 
         channels = []
         for t in ["FLAIR", "T1w", "T1wCE", "T2w"]:
@@ -45,7 +45,7 @@ class DataRetriever(Dataset):
                 glob.glob(os.path.join(patient_path, t, "*")), 
                 key=lambda x: int(x[:-4].split("-")[-1]),
             )
-            print(t_paths)
+         
             
             num_samples = self.n_frames
             if len(t_paths) < num_samples:
