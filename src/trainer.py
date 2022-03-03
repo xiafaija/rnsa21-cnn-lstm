@@ -85,7 +85,9 @@ class Trainer:
             self.optimizer.zero_grad()
             outputs = self.model(X).squeeze(1)
             predict_y = torch.max(outputs, dim=0)[1]
+            print(predict_y)
             acc += torch.eq(predict_y, targets).sum().item()
+            print(acc)
             
             loss = self.criterion(outputs, targets)
             loss.backward()
@@ -118,7 +120,9 @@ class Trainer:
                 outputs = self.model(X).squeeze(1)
                 loss = self.criterion(outputs, targets)
                 predict_y = torch.max(outputs, dim=0)[1]
+                print(predict_y)
                 acc += torch.eq(predict_y, targets).sum().item()
+                print(acc)
 
                 valid_loss.update(loss.detach().item())
                 valid_score.update(targets, outputs)
