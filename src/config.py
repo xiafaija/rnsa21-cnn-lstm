@@ -6,5 +6,5 @@ class CFG:
     lstm_hidden = 32
     
     n_fold = 5
-    n_epochs = 15
+    n_epochs = 1
     
