@@ -77,12 +77,15 @@ class Trainer:
         t = time.time()
         train_loss = self.loss_meter()
         train_score = self.score_meter()
+        acc = 0.0
         
         for step, batch in enumerate(train_loader, 1):
             X = batch["X"].to(self.device)
             targets = batch["y"].to(self.device)
             self.optimizer.zero_grad()
             outputs = self.model(X).squeeze(1)
+            predict_y = torch.max(outputs, dim=0)[1]
+            acc += torch.eq(predict_y, targets).sum().item()
             
             loss = self.criterion(outputs, targets)
             loss.backward()
@@ -96,6 +99,8 @@ class Trainer:
             message = 'Train Step {}/{}, train_loss: {:.5f}, train_score: {:.5f}'
             self.info_message(message, step, len(train_loader), _loss, _score, end="\r")
         
+        train_accuracy = acc / 468
+        print('train_accuracy: %.3f' % train_accuracy)
         return train_loss.avg, train_score.avg, int(time.time() - t)
     
     def valid_epoch(self, valid_loader):
@@ -103,6 +108,7 @@ class Trainer:
         t = time.time()
         valid_loss = self.loss_meter()
         valid_score = self.score_meter()
+        acc = 0.0
 
         for step, batch in enumerate(valid_loader, 1):
             with torch.no_grad():
@@ -111,6 +117,8 @@ class Trainer:
 
                 outputs = self.model(X).squeeze(1)
                 loss = self.criterion(outputs, targets)
+                predict_y = torch.max(outputs, dim=0)[1]
+                acc += torch.eq(predict_y, targets).sum().item()
 
                 valid_loss.update(loss.detach().item())
                 valid_score.update(targets, outputs)
@@ -119,6 +127,8 @@ class Trainer:
             message = 'Valid Step {}/{}, valid_loss: {:.5f}, valid_score: {:.5f}'
             self.info_message(message, step, len(valid_loader), _loss, _score, end="\r")
         
+        val_accuracy = acc / 117
+        print('val_accuracy: %.3f' % val_accuracy)
         return valid_loss.avg, valid_score.avg, int(time.time() - t)
     
     def plot_loss(self):
